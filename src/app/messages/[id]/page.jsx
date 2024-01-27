@@ -8,7 +8,7 @@ let socket;
 
 import useApp from "@/hooks/useApp";
 
-export default function page({params}) {
+export default function Page({params}) {
   const {getChats, user, findChat, chat, recieveMessage, messages, loading } = useApp();
   const [ friendName, setFriendName ] = useState()
 

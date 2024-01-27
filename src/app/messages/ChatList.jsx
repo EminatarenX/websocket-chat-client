@@ -1,15 +1,13 @@
 import ChatInList from "@/app/messages/Chat";
-import { Chat } from "@/types";
 import useApp from "@/hooks/useApp";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
-export default function ChatList({ chats }: { chats: Chat[] }) {
+export default function ChatList({ chats }) {
   const { users } = useApp();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const handleSearch = (value: string) => {
+  const handleSearch = (value) => {
     const user = users.find((user) => user.name === value);
     router.push(`/messages/${user?.id}`)
   }
@@ -19,6 +17,7 @@ export default function ChatList({ chats }: { chats: Chat[] }) {
       <ul className="flex flex-col gap-2 mt-2">
         {users.map((user) => (
           <button 
+            key={user.id}
             onClick={() => handleSearch(user.name)}
             className="flex items-center gap-2 p-2 rounded-md outline-none hover:bg-neutral-700"
           >

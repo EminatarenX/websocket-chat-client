@@ -1,21 +1,17 @@
 import useApp from "@/hooks/useApp"
-import React from "react"
-import { useState } from "react"
-import { NewMessageType} from "@/types"
+import {useState} from "react"
 import Image from "next/image"
-import ModalNewChat from "@/app/messages/ModalNewChat"
 import SearchBar from "@/app/messages/SearchBar"
 import ChatsList from "@/app/messages/ChatList"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }) {
   const { sendMessage, user, chat, chats } = useApp()
-  const [message, setMessage] = useState<string>("")
-  const [newChat, setNewChat] = useState<boolean>(false)
+  const [message, setMessage] = useState("")
 
-  const send = (e: React.FormEvent) => {
+  const send = (e) => {
     e.preventDefault()
     if (!message) return
-    const newMessage: NewMessageType = {
+    const newMessage = {
         text: message,
         userId: user.id,
         chatId: chat ? chat.id : undefined,
@@ -25,14 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setMessage("")
   }
   return (
-    <>
-    {
-        newChat && (
-            <ModalNewChat
-                onClose={() => setNewChat(false)}
-            />
-        )
-    }
+
     <main className="flex gap-2 h-screen p-3">
 
         <aside className="flex flex-col w-1/4 bg-neutral-800 p-2 rounded-xl">
@@ -50,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
         </aside>
         <section className="w-3/4 flex flex-col bg-neutral-800 rounded-xl">   
-            <div className="overflow-y-auto overflow-hidden h-full">
+            <div className="overflow-y-auto scrollbar-hide overflow-hidden h-full">
                 {children}
             </div>
             <form onSubmit={send} className={`flex gap-2 py-5 px-2 ${!chat ? 'hidden' : ''}`}>
@@ -61,6 +50,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </form>
         </section>
     </main>
-    </>
+
   )
 }

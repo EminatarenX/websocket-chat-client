@@ -6,7 +6,7 @@ export default function Home() {
   const [username, setUsername] = useState("")
   const { login } = useApp()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if(username.length < 1) return
 

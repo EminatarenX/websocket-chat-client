@@ -1,37 +1,44 @@
 "use client";
 import MessagesLayout from "@/components/Layout";
 import React, { useEffect, useState } from "react";
-import { Message as Messagetype, User } from "@/types";
 import Message from "@/app/messages/Message";
+import { io } from "socket.io-client";
+let socket;
+
 
 import useApp from "@/hooks/useApp";
 
-type ParamsType = {
-  params: {
-    id: string
-  }
-}
-export default function page({params}: ParamsType) {
-  const { user, findChat, chat } = useApp();
-  const [ friendName, setFriendName ] = useState<string>()
-
+export default function page({params}) {
+  const {getChats, user, findChat, chat, recieveMessage, messages, loading } = useApp();
+  const [ friendName, setFriendName ] = useState()
 
   useEffect(() => {
     findChat(params.id)
-    
+      socket = io('http://localhost:4000')
+
+      socket.on('newMessage', (message) => {
+        recieveMessage(message)
+      })
+      getChats()
+     
   },[])
+
+
   useEffect(() => {
     const filterFriendName = () =>{
-      const friend = chat?.users?.find((userFind: User) => userFind.id !== user.id);
+      const friend = chat?.users?.find((userFind) => userFind.id !== user.id);
       setFriendName(friend?.name)
     }
     filterFriendName()
+    
+    
+    socket.emit('chat', chat?.id)
   },[chat])
 
   
   return (
     <MessagesLayout>
-      <header className="flex gap-5 items-center p-3 bg-neutral-700 rounded-t-xl">
+      <header className="sticky top-0 flex gap-5 items-center p-3 bg-neutral-700 rounded-t-xl">
         {
           //user Icon
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-8 h-8">
@@ -41,14 +48,14 @@ export default function page({params}: ParamsType) {
         }
         <h1 className="tracking-widest text-white capitalize">{friendName && friendName}</h1>
       </header>
-      {!chat ? (
+      {messages?.length === 0 || loading ? (
         <p className="flex justify-center items-center h-full text-2xl tracking-widest text-neutral-500">
           No messages
         </p>
       ) : (
-        <ul className="flex flex-col gap-2 p-2">
-          {chat.messages.map((message) => (
-            <Message key={message.id} message={message} user={user} />
+        <ul className="flex flex-col gap-2 p-2" id="chat">
+          {messages?.map((message, index) => (
+            <Message key={message.id} length={messages.length} index={index} message={message} user={user} />
           ))}
         </ul>
       )}

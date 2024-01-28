@@ -14,7 +14,7 @@ export default function Page({params}) {
 
   useEffect(() => {
     findChat(params.id)
-      socket = io('http://localhost:4000')
+      socket = io(`${process.env.NEXT_PUBLIC_API_URL}`)
 
       socket.on('newMessage', (message) => {
         recieveMessage(message)

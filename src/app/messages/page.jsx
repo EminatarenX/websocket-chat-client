@@ -13,7 +13,7 @@ export default function Page() {
     useEffect(() => {
         getChats()
         if(!user) return
-        socket = io('http://localhost:4000')
+        socket = io(`${process.env.NEXT_PUBLIC_API_URL}`)
         socket.emit('userConnected', user)
         socket.on('newChat', chat => {
             setNewChatSocket(chat)

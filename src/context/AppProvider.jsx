@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 let socket;
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
 });
 
 export const AppContext = createContext({});
@@ -135,7 +135,7 @@ export default function AppProvider({ children }) {
     };
 
     auth();
-    socket = io("http://localhost:4000");
+    socket = io(`${process.env.NEXT_PUBLIC_API_URL}`);
 
     if(!user) return
 
